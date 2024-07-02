@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container, .container-edit {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    .container h1, .container-edit h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #ddd;
+      margin: 10px 0;
+    }
+
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .button:hover {
+      background-color: #45a049;
+    }
+
+    .container-edit {
+      display: none;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: calc(100% - 22px);
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <h1 id='header'>User Profile</h1>
+    <img src='profile-picture' alt='Profile Picture' style="width:100%; border-radius: 50%;">
+    <p><strong>Name:</strong></p>
+    <h3 id='name'>Anna Smith</h3>
+    <hr />
+    <p><strong>Email:</strong></p>
+    <h3 id='email'>anna.smith@example.com</h3>
+    <hr />
+    <p><strong>Interests:</strong></p>
+    <h3 id='interests'>coding</h3>
+    <hr />
+    <button class='button' onclick="editProfile()">Edit Profile</button>
+  </div>
+
+  <div class='container-edit'>
+    <h1 id='header-edit'>Edit Profile</h1>
+    <img src='./profile-picture.jpg' alt='Profile Picture' style="width:100%; border-radius: 50%;">
+    <p><strong>Name:</strong></p>
+    <input id='input-name' type='text' />
+    <hr />
+    <p><strong>Email:</strong></p>
+    <input id='input-email' type='email' />
+    <hr />
+    <p><strong>Interests:</strong></p>
+    <input id='input-interests' type='text' />
+    <hr />
+    <button class='button' onclick="saveProfile()">Save Profile</button>
+  </div>
+
+  <script>
+    function editProfile() {
+      document.querySelector(".container").style.display = "none";
+      document.querySelector(".container-edit").style.display = "block";
+
+      const name = document.querySelector("#name").textContent;
+      document.querySelector("#input-name").value = name;
+
+      const email = document.querySelector("#email").textContent;
+      document.querySelector("#input-email").value = email;
+
+      const interests = document.querySelector("#interests").textContent;
+      document.querySelector("#input-interests").value = interests;
+    }
+
+    function saveProfile() {
+      document.querySelector("#name").textContent =
+        document.querySelector("#input-name").value;
+      document.querySelector("#email").textContent =
+        document.querySelector("#input-email").value;
+      document.querySelector("#interests").textContent =
+        document.querySelector("#input-interests").value;
+
+      document.querySelector(".container").style.display = "block";
+      document.querySelector(".container-edit").style.display = "none";
+    }
+  </script>
+</body>
+</html>
