@@ -5,14 +5,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // MongoDB connection URL
-const mongoURL = 'mongodb://admin:password@localhost:27017/user-account';
+const mongoURL = 'mongodb://admin:password@mongodb:27017/user-account';
 
 // Connect to MongoDB
 mongoose.connect(mongoURL, {})
@@ -63,6 +63,10 @@ app.post('/update-profile', async (req, res) => {
 
     try {
         let updatedUser = await User.findOne({ userId: 1 }).exec();
+        if(updatedUser) console.log('User found:', updatedUser);
+            else {
+                console.log('User not found');
+            }
 
         if (!updatedUser) {
             // Create new user if not found
@@ -77,9 +81,9 @@ app.post('/update-profile', async (req, res) => {
             updatedUser.name = name || updatedUser.name;
             updatedUser.email = email || updatedUser.email;
             updatedUser.interests = interests || updatedUser.interests;
-
-            await updatedUser.save();
         }
+
+        await updatedUser.save();
 
         console.log('Successfully updated or inserted:', updatedUser);
         res.json(updatedUser);
