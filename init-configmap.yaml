@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-init-script
+data:
+  init-mongo.js: |
+    db = db.getSiblingDB('user-account');
+    
+    db.createCollection('users');
+    
+    db.createUser({
+      user: 'admin',
+      pwd: 'password',
+      roles: [
+        { role: 'readWrite', db: 'user-account' },
+        { role: 'dbAdmin', db: 'user-account' }
+      ]
+    });
+    
+    db.users.insertOne({
+      userId: 1,
+      email: 'mm.nazmul@brainstation-23.com',
+      interests: 'Sleeping Dogs',
+      name: 'Nazmul Hossain'
+    });
