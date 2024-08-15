@@ -19,19 +19,35 @@ spec:
             - containerPort: 8081
           env:
             - name: ME_CONFIG_MONGODB_URL
-              value: "mongodb://admin:password@mongodb:27017"
-            - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
-              value: "true"
-            - name: ME_CONFIG_SITE_SESSIONSECRET
-              value: "secret"
-            - name: ME_CONFIG_BASICAUTH
-              value: "true"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: ME_CONFIG_MONGODB_URL
             - name: ME_CONFIG_MONGODB_SERVER
-              value: "mongodb"
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-express-config
+                  key: ME_CONFIG_MONGODB_SERVER
             - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: ME_CONFIG_MONGODB_ADMINUSERNAME
             - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-              value: "password"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: ME_CONFIG_MONGODB_ADMINPASSWORD
+            - name: ME_CONFIG_SITE_SESSIONSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: ME_CONFIG_SITE_SESSIONSECRET
+            - name: ME_CONFIG_BASICAUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-express-config
+                  key: ME_CONFIG_BASICAUTH
 ---
 apiVersion: v1
 kind: Service

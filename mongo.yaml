@@ -19,11 +19,14 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: password
       ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017
 
   my-project:
-    image: nazmul4532brainstation/my-project:1.0
+    image: nazmul4532brainstation/my-project:1.2
     ports:
       - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://admin:password@mongodb:27017/user-account
 
 volumes:
   mongo-data:

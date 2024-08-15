@@ -17,7 +17,3 @@ spec:
                 name: nodejs-service
                 port:
                   number: 3000
-  tls:
-    - hosts:
-        - local.simple.com
-      secretName: simple-com-tls

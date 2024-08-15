@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // MongoDB connection URL
-const mongoURL = 'mongodb://admin:password@mongodb:27017/user-account';
+const mongoURL = process.env.MONGODB_URI;
 
 // Connect to MongoDB
 mongoose.connect(mongoURL, {})

@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,7 +46,8 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
       volumes:
         - name: mongo-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: mongo-data-pvc
         - name: mongo-init
           configMap:
             name: mongo-init-script
