@@ -32,14 +32,30 @@ Ensure you have the following installed on your system:
    yarn start
    ```
 
-## Building the Docker Image
+## Building and Pushing the Docker Image
 
 1. **Build the Docker Image**
 
    If you have Docker installed, you can build a Docker image for the application using the provided `Dockerfile`:
 
    ```bash
-   docker build -t your-image-name .
+   docker build -t nazmul4532brainstation/my-project:1.2 .
+   ```
+
+2. **Login to Docker Hub**
+
+   Log in to your Docker Hub account:
+
+   ```bash
+   docker login
+   ```
+
+3. **Push the Docker Image**
+
+   After building the image, you can upload it to Docker Hub:
+
+   ```bash
+   docker push nazmul4532brainstation/my-project:1.2
    ```
 
 ## Running the Application with Docker Compose
