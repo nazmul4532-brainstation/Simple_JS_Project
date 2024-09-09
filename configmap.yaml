@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: mongo-express-config
 data:
-  ME_CONFIG_MONGODB_SERVER: "mongodb"
-  ME_CONFIG_BASICAUTH: "true"
+  ME_CONFIG_MONGODB_SERVER: mongodb.default.svc.cluster.local
+  ME_CONFIG_BASICAUTH: "false"
