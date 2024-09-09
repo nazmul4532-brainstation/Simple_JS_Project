@@ -1,46 +1,105 @@
-# Kubernetes Setup with Kind, Cilium, and Gateway API
+# Project Setup and Deployment Guide
 
-## Prerequisites
+This guide will walk you through setting up and deploying the application using Yarn, Docker, Docker Compose, and Kubernetes with Kind and Kubectl.
 
-- **Kind**: Kubernetes IN Docker
-- **Kubernetes**: Ensure `kubectl` is installed
-- **Cilium**: Install Cilium (installation script will be added later)
+## Deploying to Kubernetes with Kind using Cilium CNI and Gateway API
 
-## Instructions
+1. **Create a Kind Cluster**
 
-```bash
-# 1. Create Kind Cluster
-# This command creates a Kubernetes cluster using Kind based on the configuration provided in cluster.yaml.
-kubectl apply -f cluster.yaml
+   Set up a Kind cluster using the provided configuration:
 
-# 2. Install Gateway API CRDs
-# These commands install the necessary Custom Resource Definitions (CRDs) for the Gateway API,
-# which are required for managing Gateway resources and HTTP routes.
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+   ```bash
+   kind create cluster --config cluster.yaml
+   ```
 
-# 3. Install Cilium
-# This command installs Cilium as the CNI plugin with specific settings,
-# enabling NodePort, kube-proxy replacement, L7 proxy, and Gateway API support.
-cilium install --set nodePort.enabled=true --set kubeProxyReplacement=true --set l7Proxy=true --set gatewayAPI.enabled=true --version 1.16.1
+2. **Configure Kubectl**
 
-# 4. Apply Kubernetes Resources
-# Apply the configuration for various Kubernetes resources. These resources include:
-# - ConfigMaps for initial setup and configuration
-# - Secrets for storing sensitive data such as TLS certificates
-# - Deployments and services for MongoDB, Mongo Express, and a simple Node.js application
-# - Gateway and HTTPRoute configurations for managing ingress traffic and routing
-kubectl apply -f configmap.yaml    # Apply initial configuration
-kubectl apply -f init-configmap.yaml # Apply configuration for initial setup
-kubectl apply -f secret.yaml       # Apply secret configurations
-kubectl apply -f my-tls-secret.yaml # Apply TLS secret for secure communication
-kubectl apply -f mongodb.yaml      # Deploy MongoDB service
-kubectl apply -f mongo-express.yaml # Deploy Mongo Express service
-kubectl apply -f simple-nodejs-app.yaml # Deploy a simple Node.js application
-kubectl apply -f gateway.yaml      # Apply Gateway configuration
-kubectl apply -f httproute.yaml    # Apply HTTPRoute configuration for local.simple.com
-kubectl apply -f expresshttproute.yaml # Apply HTTPRoute configuration for local.express.com
+   Retrieve the Kind cluster config and update your kubeconfig:
+
+   ```bash
+   kind get kubeconfig >> ~/.kube/config
+   ```
+
+   Modify the server address if not already in `~/.kube/config` to:
+
+   ```yaml
+   server: https://127.0.0.1:6443
+   ```
+
+   
+3. **Install Gateway API CRDs**
+
+ These commands install the necessary Custom Resource Definitions (CRDs) for the Gateway API, which are required for managing Gateway resources and HTTP routes.
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+   ```
+
+4. **Install Cilium**
+
+This command installs Cilium as the CNI plugin with specific settings, enabling NodePort, kube-proxy replacement, L7 proxy, and Gateway API support.
+   ```bash
+   cilium install --set nodePort.enabled=true --set kubeProxyReplacement=true --set l7Proxy=true --set gatewayAPI.enabled=true --version 1.16.1
+   ```
+
+5. **Deploy the Application to the Cluster**
+
+   Apply the configuration files in the following order:
+
+   ```bash
+   kubectl apply -f configmap.yaml
+   kubectl apply -f secret.yaml
+   kubectl apply -f my-tls-secret.yaml
+   kubectl apply -f init-configmap.yaml
+   kubectl apply -f mongodb.yaml
+   kubectl apply -f mongo-express.yaml
+   kubectl apply -f simple-project.yaml
+   kubectl apply -f gateway.yaml
+   kubectl apply -f httproute.yaml
+   kubectl apply -f expresshttproute.yaml
+   ```
+
+6. **Update `/etc/hosts` File**
+
+   Go to cli and use the following command to get the Node Ip Address:
+   ```bash
+   kubectl get nodes -o wide
+   ```
+
+   Add the following line to your `/etc/hosts` file to map the local domains:
+
+   ```bash
+   <Any Node IP> local.simple.com local.express.com
+   ```
+
+6. **Access the Website**
+
+   Go to cli and use the following command to get the Node Port:
+   ```bash
+   kubectl get services
+   ```
+   Under the services, there will be a service names cilium-gateway-app-gateway, which is bound port 80 and 443 to some random Node Ports. Those Node Ports are accessible from the host Machine.
+
+   To access the Simple Node JS website go to:
+
+   ```bash
+   http://local.simple.com:<80 bournd Node-Port>/
+   //or
+   https://local.simple.com:<443 bournd Node-Port>/
+   ```
+
+   To access the Mongo Express website go to:
+
+   ```bash
+   http://local.express.com:<80 bournd Node-Port>/
+   //or
+   https://local.express.com:<443 bournd Node-Port>/
+   ```
+
+## Conclusion
+
+With these steps, you should have the application running using Cillium CNI and Gateway API, refer to the individual configuration files and their documentation.
