@@ -41,6 +41,11 @@ This guide will walk you through setting up and deploying the application using 
 
 4. **Install Cilium**
 
+If cillium is not already installed, you may use the provided script to install cilium:
+```bash
+./install-cillium.sh
+```
+
 This command installs Cilium as the CNI plugin with specific settings, enabling NodePort, kube-proxy replacement, L7 proxy, and Gateway API support.
    ```bash
    cilium install --set nodePort.enabled=true --set kubeProxyReplacement=true --set l7Proxy=true --set gatewayAPI.enabled=true --version 1.16.1
