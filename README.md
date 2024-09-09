@@ -17,13 +17,14 @@ Ensure you have the following installed on your system:
 ## Running the Application Locally
 
 1. **Install Dependencies**
+
    After cloning the repository, navigate to the project directory and install the necessary packages using Yarn:
 
    ```bash
    yarn install
    ```
 
-2. **Start the Application**
+3. **Start the Application**
 
    To start the application locally, use:
 
