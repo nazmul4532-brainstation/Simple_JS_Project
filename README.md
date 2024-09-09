@@ -1,6 +1,6 @@
 # Project Setup and Deployment Guide
 
-This guide will walk you through setting up and deploying the application using Yarn, Docker, Docker Compose, and Kubernetes with Kind and Kubectl.
+This guide will walk you through setting up and deploying the application using Cilium CNI and Gateway API in a Kind Cluster.
 
 ## Deploying to Kubernetes with Kind using Cilium CNI and Gateway API
 
